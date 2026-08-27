@@ -1,0 +1,49 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <PackageType>Template</PackageType>
+    <PackageId>VelaShell.Plugin.Templates</PackageId>
+    <Title>VelaShell plugin templates</Title>
+    <Description>VelaShell 插件工程的 dotnet new 模板:velaplugin(基础)与 velaplugin-ui(带 Avalonia 面板)。`dotnet new install VelaShell.Plugin.Templates` 后即可用。</Description>
+    <PackageTags>dotnet-new;templates;velashell;plugin</PackageTags>
+
+    <!-- 模板包只有内容,没有程序集。 -->
+    <IncludeContentInPack>true</IncludeContentInPack>
+    <IncludeBuildOutput>false</IncludeBuildOutput>
+    <ContentTargetFolders>content</ContentTargetFolders>
+    <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
+    <EnableDefaultNoneItems>false</EnableDefaultNoneItems>
+    <GenerateDocumentationFile>false</GenerateDocumentationFile>
+    <!-- 关键:.template.config 以点开头,不关掉默认排除的话它不会进包,
+         装上去的模板就"看不见" —— 而且不会报错,只是 dotnet new 列表里没有。 -->
+    <NoDefaultExcludes>true</NoDefaultExcludes>
+    <!-- NU5128:有 content 无 lib,模板包的正常形态。 -->
+    <NoWarn>$(NoWarn);NU5128</NoWarn>
+    <SuppressDependenciesWhenPacking>true</SuppressDependenciesWhenPacking>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Content Include="content\**\*" Exclude="content\**\bin\**;content\**\obj\**" />
+    <Compile Remove="**\*" />
+  </ItemGroup>
+
+  <!--
+    模板里写死了生成工程要引用的 VelaShell.PluginSdk.Build 版本
+    (template.json 的 sdkVersion 默认值)。发新版模板却忘了同步它,
+    新建出来的工程就会去还原一个旧版包 —— 这里在构建期核对一遍。
+
+    ⚠️ 拆库(2026-08-27)之后核对的基准从 $(VelaSdkVersion) 换成了
+    $(VelaBuildPackageVersion):模板包自己的版本与「生成的工程引用哪版 Build 包」
+    是两件事,它们各自独立地变。拿模板包自己的版本去比会在下一次「只改了模板文案」
+    的发布上误报,而那正是拆库要支持的最常见场景。
+  -->
+  <Target Name="VerifyTemplateSdkVersion" BeforeTargets="Build">
+    <ItemGroup>
+      <_VelaTemplateConfig Include="content\*\.template.config\template.json" />
+    </ItemGroup>
+    <Error Condition="!$([System.IO.File]::ReadAllText('%(_VelaTemplateConfig.FullPath)').Contains('$(VelaBuildPackageVersion)'))"
+           Code="VELA1004"
+           Text="%(_VelaTemplateConfig.Identity) does not mention VelaBuildPackageVersion '$(VelaBuildPackageVersion)'. Update the sdkVersion symbol's defaultValue so generated projects reference the VelaShell.PluginSdk.Build version this repository targets — run `pwsh scripts/Set-Version.ps1 -BuildPackageVersion $(VelaBuildPackageVersion)`." />
+  </Target>
+
+</Project>

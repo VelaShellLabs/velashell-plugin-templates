@@ -1,0 +1,73 @@
+<Project>
+  <PropertyGroup>
+	<TargetFramework>net11.0</TargetFramework>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <!--
+      本仓库产出一个包:
+
+          VelaShell.Plugin.Templates    dotnet new 模板(velaplugin / velaplugin-ui)
+
+      **与其余工具链解耦**(2026-08-27 拆库起):契约 SDK 在 joesdu/velashell-plugin-sdk,
+      vela-plugin 与 VelaShell.PluginSdk.Build 在 joesdu/velashell-plugin-cli,
+      三者各有各的版本号。模板文案改一行就发一版模板,不必惊动那两个仓库;
+      反过来它们发版也不要求模板跟着发。
+
+      CI 发包时用 -p:VelaTemplatesVersion= 覆盖(取自 Release 标签)。
+    -->
+    <VelaTemplatesVersion Condition="'$(VelaTemplatesVersion)' == ''">1.5.0</VelaTemplatesVersion>
+    <Version>$(VelaTemplatesVersion)</Version>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <!--
+      **`dotnet new velaplugin` 生成出来的工程要引用哪一版 VelaShell.PluginSdk.Build。**
+
+      这是本仓库唯一的跨仓库旋钮,与上面那个「模板包自己的版本」是**两件事**,
+      拆库之后必须分开 —— 单仓库时代它俩是同一个数字,于是「改了模板文案」和
+      「换了插件作者的构建工具链」这两种性质完全不同的变更长得一模一样。
+
+      落点两处,由 scripts/Set-Version.ps1 的 -BuildPackageVersion 统一维护:
+        · 两个模板的 .template.config/template.json 里 sdkVersion 的 defaultValue;
+        · docs{,-en}/dev-guide.md 里那段 PackageReference 片段。
+      漏了第一处:新建出来的工程去还原一个旧包(构建期由 VELA1004 拦下)。
+      漏了第二处:文档是给人照抄的,过期版本号会被原样粘进别人的工程。
+
+      抬它的时机:velashell-plugin-cli 发了新版 .Build 包,而你希望新建的工程指过去。
+      **不抬也完全正常** —— 新建的工程继续引用上一版,那是可用的,不是遗漏。
+    -->
+    <VelaBuildPackageVersion Condition="'$(VelaBuildPackageVersion)' == ''">1.5.0</VelaBuildPackageVersion>
+  </PropertyGroup>
+
+  <PropertyGroup>
+  	<Authors>joesdu</Authors>
+  	<PackagePrefix>VelaShell</PackagePrefix>
+  	<RepositoryType>git</RepositoryType>
+  	<RepositoryUrl>https://github.com/joesdu/velashell-plugin-templates</RepositoryUrl>
+  	<PackageLicenseExpression>AGPL-3.0-only</PackageLicenseExpression>
+  	<PackageProjectUrl>https://github.com/joesdu/velashell-plugin-templates</PackageProjectUrl>
+  	<PackageReadmeFile>README.md</PackageReadmeFile>
+  </PropertyGroup>
+
+  <ItemGroup>
+  	<None Include=".\README.md" Pack="true" PackagePath="" />
+  </ItemGroup>
+
+  <PropertyGroup>
+  	<LangVersion>preview</LangVersion>
+  	<Nullable>enable</Nullable>
+  	<ImplicitUsings>enable</ImplicitUsings>
+  	<NoWarn>$(NoWarn);IDE0047;</NoWarn>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <VelaRepoRoot>$(MSBuildThisFileDirectory)</VelaRepoRoot>
+    <VelaArtifactsDir Condition="'$(VelaArtifactsDir)' == ''">$(VelaRepoRoot)artifacts</VelaArtifactsDir>
+  </PropertyGroup>
+
+  <!--
+    ⚠️ 本仓库不产出任何程序集,因此既不签名也不需要 STRONG_NAME_KEY。
+    模板包只有 content/,没有 lib/。
+  -->
+</Project>

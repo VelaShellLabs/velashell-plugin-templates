@@ -1,0 +1,30 @@
+<Solution>
+  <Folder Name="/.github/">
+    <File Path=".github/dependabot.yml" />
+  </Folder>
+  <Folder Name="/.github/workflows/">
+    <File Path=".github/workflows/ci.yml" />
+    <File Path=".github/workflows/release.yml" />
+  </Folder>
+  <Folder Name="/Solution Items/">
+    <File Path="Directory.Build.props" />
+    <File Path="Directory.Build.targets" />
+    <File Path="global.json" />
+    <File Path="nuget.config" />
+    <File Path="LICENSE" />
+    <File Path="README.md" />
+  </Folder>
+  <Folder Name="/docs/">
+    <File Path="docs/README.md" />
+    <File Path="docs/dev-guide.md" />
+    <File Path="docs/publishing.md" />
+    <File Path="docs/release-process.md" />
+  </Folder>
+  <Folder Name="/scripts/">
+    <File Path="scripts/Set-Version.ps1" />
+    <File Path="scripts/Invoke-Smoke.ps1" />
+  </Folder>
+  <Folder Name="/src/">
+    <Project Path="src/VelaShell.Plugin.Templates/VelaShell.Plugin.Templates.csproj" />
+  </Folder>
+</Solution>

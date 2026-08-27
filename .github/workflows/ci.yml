@@ -1,0 +1,85 @@
+# dotnet new 模板的日常验证。发布不走这里(见 release.yml),但**发布会做的事这里全都
+# 做一遍** —— 唯一差别是不推 nuget.org。
+#
+# 本仓库**不需要任何机密**:不产出程序集因而不签名,推送走 OIDC。
+# 于是 fork PR 与主分支跑的是完全同一条路径。
+name: CI
+
+on:
+  push:
+    branches: [main, dev]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-dotnet@v6
+        with:
+          global-json-file: global.json
+
+      # 本仓库有**两个**版本号,含义完全不同(见 Directory.Build.props 的注释):
+      #   VelaTemplatesVersion    模板包自己的版本
+      #   VelaBuildPackageVersion 生成的工程要引用哪一版 VelaShell.PluginSdk.Build
+      # 冒烟要用到后者(传给 dotnet new --sdkVersion),所以两个都读出来。
+      - name: Resolve versions
+        id: version
+        shell: pwsh
+        run: |
+          $props = Get-Content -Raw Directory.Build.props
+          $version = [regex]::Match($props, '<VelaTemplatesVersion[^>]*>([^<]+)</VelaTemplatesVersion>').Groups[1].Value
+          $buildVersion = [regex]::Match($props, '<VelaBuildPackageVersion[^>]*>([^<]+)</VelaBuildPackageVersion>').Groups[1].Value
+          if ([string]::IsNullOrWhiteSpace($version)) {
+            Write-Error "Could not read VelaTemplatesVersion from Directory.Build.props"; exit 1
+          }
+          if ([string]::IsNullOrWhiteSpace($buildVersion)) {
+            Write-Error "Could not read VelaBuildPackageVersion from Directory.Build.props"; exit 1
+          }
+          "version=$version" >> $env:GITHUB_OUTPUT
+          "buildVersion=$buildVersion" >> $env:GITHUB_OUTPUT
+          Write-Host "templates $version, generated projects reference VelaShell.PluginSdk.Build $buildVersion"
+
+      # 版本号同步体检。不带参数的 -Check 就是「拿 Directory.Build.props 里的当前值
+      # 核对全部落点」—— 两个模板的 template.json 与两份 dev-guide 的 PackageReference 片段。
+      - name: Version consistency check
+        shell: pwsh
+        run: |
+          & ./scripts/Set-Version.ps1 -Check
+          # if ($LASTEXITCODE) 而不是 -ne 0:.ps1 不调用 exit 时**不会设置** $LASTEXITCODE,
+          # 那时它是 $null —— 而 `$null -ne 0` 为真,会把一次成功判成失败。
+          if ($LASTEXITCODE) { exit $LASTEXITCODE }
+
+      - name: Pack
+        shell: pwsh
+        run: |
+          $version = '${{ steps.version.outputs.version }}'
+          New-Item -ItemType Directory -Force artifacts/nuget | Out-Null
+          dotnet pack src/VelaShell.Plugin.Templates/VelaShell.Plugin.Templates.csproj `
+            -c Release -o artifacts/nuget -p:VelaTemplatesVersion=$version --nologo
+          if ($LASTEXITCODE -ne 0) { exit 1 }
+          Get-ChildItem artifacts/nuget | Select-Object -ExpandProperty Name
+
+      # 端到端冒烟。模板包是纯内容包,`dotnet pack` 成功几乎什么都不能说明 ——
+      # 真正会出问题的地方全在包装好之后(.template.config 没进包因而模板"看不见"、
+      # sdkVersion 指向一个不存在的 Build 包版本、示例代码用到了老 Build 包没有的 API)。
+      # 所以必须真的装一次、真的生成一次、真的构建一次。两个模板都走。
+      # 细节见 scripts/Invoke-Smoke.ps1 的注释。
+      - name: Smoke test (dotnet new -> build -> .vpx)
+        shell: pwsh
+        run: |
+          & ./scripts/Invoke-Smoke.ps1 `
+            -Feed ./artifacts/nuget `
+            -Version '${{ steps.version.outputs.version }}' `
+            -BuildPackageVersion '${{ steps.version.outputs.buildVersion }}'
+          if ($LASTEXITCODE) { exit $LASTEXITCODE }
+
+      - uses: actions/upload-artifact@v7
+        with:
+          name: nuget-packages
+          path: artifacts/nuget/*
+          if-no-files-found: error
