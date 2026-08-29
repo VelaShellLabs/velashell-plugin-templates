@@ -1,6 +1,6 @@
 # 编译、打包、签名与发布
 
-> 相关文档:[开发指南](dev-guide.md) · [CLI 手册](https://github.com/joesdu/velashell-plugin-cli/blob/main/docs/cli.md) · [SDK 参考](https://github.com/joesdu/velashell-plugin-sdk/blob/main/docs/sdk-reference.md)
+> 相关文档:[开发指南](dev-guide.md) · [CLI 手册](https://github.com/VelaShellLabs/velashell-plugin-cli/blob/main/docs/cli.md) · [SDK 参考](https://github.com/VelaShellLabs/velashell-plugin-sdk/blob/main/docs/sdk-reference.md)
 > 插件商店:<http://market.easilynet.top>
 
 本篇讲插件从"本机能跑"到"别人能装"的全过程。三件事:**出一个正确的包**、
@@ -161,7 +161,7 @@ vela-plugin install <你的插件 id>          # 命令行,SDK 1.5.0 起
 或者从商店页下载 `.vpx`,在 VelaShell 的「插件管理页 → 安装 .vpx…」里选文件。
 两条路落到同一个目录,差别只有一处:管理页会额外落一份**受保护的安装收据**做事后防篡改,
 命令行造不出那份收据(密钥在宿主进程里),但它在装之前会把整包摘要、容器摘要、签名、
-清单一致性与宿主兼容性全部核一遍。细节见 [CLI 手册](https://github.com/joesdu/velashell-plugin-cli/blob/main/docs/cli.md#2-从插件商店安装)。
+清单一致性与宿主兼容性全部核一遍。细节见 [CLI 手册](https://github.com/VelaShellLabs/velashell-plugin-cli/blob/main/docs/cli.md#2-从插件商店安装)。
 
 > 商店侧的具体提交表单/接口以站点为准,下面列的是**无论走哪种表单都需要准备好的材料**。
 

@@ -8,7 +8,7 @@
 | [publishing.md](publishing.md) | **Packaging and publishing**: Release builds, `.vpx`, signing and trust, publishing to the [marketplace](http://market.easilynet.top), CI packaging |
 | [../docs/release-process.md](../docs/release-process.md) | **How this repository releases** (Chinese only) |
 
-Writing your first plugin? Read `dev-guide.md` → [CLI manual](https://github.com/joesdu/velashell-plugin-cli/blob/main/docs-en/cli.md) → `publishing.md`, in that order.
+Writing your first plugin? Read `dev-guide.md` → [CLI manual](https://github.com/VelaShellLabs/velashell-plugin-cli/blob/main/docs-en/cli.md) → `publishing.md`, in that order.
 
 ## Two documents that live elsewhere
 
@@ -18,8 +18,8 @@ repositories needs a commit in this one:
 
 | Document | Where it lives now |
 | --- | --- |
-| **`vela-plugin` manual** | [velashell-plugin-cli / docs-en/cli.md](https://github.com/joesdu/velashell-plugin-cli/blob/main/docs-en/cli.md) |
-| **SDK reference** | [velashell-plugin-sdk / docs-en/sdk-reference.md](https://github.com/joesdu/velashell-plugin-sdk/blob/main/docs-en/sdk-reference.md) |
+| **`vela-plugin` manual** | [velashell-plugin-cli / docs-en/cli.md](https://github.com/VelaShellLabs/velashell-plugin-cli/blob/main/docs-en/cli.md) |
+| **SDK reference** | [velashell-plugin-sdk / docs-en/sdk-reference.md](https://github.com/VelaShellLabs/velashell-plugin-sdk/blob/main/docs-en/sdk-reference.md) |
 
 ## What is not here
 

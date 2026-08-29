@@ -1,6 +1,6 @@
 # Building, Packaging, Signing and Publishing
 
-> See also: [Development Guide](dev-guide.md) · [CLI Manual](https://github.com/joesdu/velashell-plugin-cli/blob/main/docs-en/cli.md) · [SDK Reference](https://github.com/joesdu/velashell-plugin-sdk/blob/main/docs-en/sdk-reference.md)
+> See also: [Development Guide](dev-guide.md) · [CLI Manual](https://github.com/VelaShellLabs/velashell-plugin-cli/blob/main/docs-en/cli.md) · [SDK Reference](https://github.com/VelaShellLabs/velashell-plugin-sdk/blob/main/docs-en/sdk-reference.md)
 > Plugin marketplace: <http://market.easilynet.top>
 
 This page covers the road from "it runs on my machine" to "other people can install it".
@@ -166,7 +166,7 @@ Both land in the same directory. The single difference: the manager also records
 installation receipt** for post-install tamper detection, which the CLI cannot produce (the key
 lives inside the host process) - in exchange the CLI verifies the file digest, the container
 digest, the signature, manifest consistency and host compatibility before writing anything.
-See the [CLI manual](https://github.com/joesdu/velashell-plugin-cli/blob/main/docs-en/cli.md#2-installing-from-the-marketplace).
+See the [CLI manual](https://github.com/VelaShellLabs/velashell-plugin-cli/blob/main/docs-en/cli.md#2-installing-from-the-marketplace).
 
 > The exact submission form/API belongs to the site; the list below is the material you need
 > regardless of its shape.

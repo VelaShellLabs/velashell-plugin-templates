@@ -21,10 +21,10 @@ Since 2026-08-27 the toolchain is split across three repositories, each versione
 
 | Repository / location | Contents |
 | --- | --- |
-| [velashell-plugin-sdk](https://github.com/joesdu/velashell-plugin-sdk) `src/VelaShell.PluginSdk/` | Contract: entry interfaces, capability interfaces, DTOs, and manifest models |
-| [velashell-plugin-sdk](https://github.com/joesdu/velashell-plugin-sdk) `src/VelaShell.PluginSdk.Testing/` | Test doubles: `TestPluginContext` and in-memory implementations of each capability |
-| [velashell-plugin-cli](https://github.com/joesdu/velashell-plugin-cli) `src/VelaShell.PluginSdk.Build/` | The single NuGet package a plugin project references: MSBuild props/targets plus the bundled packer |
-| [velashell-plugin-cli](https://github.com/joesdu/velashell-plugin-cli) `src/VelaShell.Plugin.Cli/` | The `vela-plugin` command line tool (validate/pack/sign/dev mount) |
+| [velashell-plugin-sdk](https://github.com/VelaShellLabs/velashell-plugin-sdk) `src/VelaShell.PluginSdk/` | Contract: entry interfaces, capability interfaces, DTOs, and manifest models |
+| [velashell-plugin-sdk](https://github.com/VelaShellLabs/velashell-plugin-sdk) `src/VelaShell.PluginSdk.Testing/` | Test doubles: `TestPluginContext` and in-memory implementations of each capability |
+| [velashell-plugin-cli](https://github.com/VelaShellLabs/velashell-plugin-cli) `src/VelaShell.PluginSdk.Build/` | The single NuGet package a plugin project references: MSBuild props/targets plus the bundled packer |
+| [velashell-plugin-cli](https://github.com/VelaShellLabs/velashell-plugin-cli) `src/VelaShell.Plugin.Cli/` | The `vela-plugin` command line tool (validate/pack/sign/dev mount) |
 | **this repository** `src/VelaShell.Plugin.Templates/` | `dotnet new` templates (`velaplugin` / `velaplugin-ui`) |
 
 The host-side implementation lives in the **main repository** [joesdu/VelaShell](https://github.com/joesdu/VelaShell):
@@ -37,7 +37,7 @@ The host-side implementation lives in the **main repository** [joesdu/VelaShell]
 ### 2.1 Where the First-Party Plugins Live
 
 The officially maintained plugins (AI / Redis / S3 / Telnet, plus the HelloWorld example) live in
-[joesdu/velashell-plugins](https://github.com/joesdu/velashell-plugins), not in this repository.
+[VelaShellLabs/velashell-plugins](https://github.com/VelaShellLabs/velashell-plugins), not in this repository.
 
 **They take exactly the same path your own plugin does** — they reference
 `VelaShell.PluginSdk.Build` from nuget.org, with no in-repository privileges. So §2.2 below is the
@@ -101,7 +101,7 @@ That one package brings everything a plugin project needs: the `VelaShell.Plugin
 vela-plugin install velashell.redis      # since SDK 1.5.0
 ```
 
-Fetches the package by id from the [marketplace](http://market.easilynet.top), checks its digests and signature, and extracts it into `~/.velashell/plugins/<id>/`; restart the host to load it. `search` / `list` / `update` / `uninstall` round it out — see the [CLI manual](https://github.com/joesdu/velashell-plugin-cli/blob/main/docs-en/cli.md#2-installing-from-the-marketplace).
+Fetches the package by id from the [marketplace](http://market.easilynet.top), checks its digests and signature, and extracts it into `~/.velashell/plugins/<id>/`; restart the host to load it. `search` / `list` / `update` / `uninstall` round it out — see the [CLI manual](https://github.com/VelaShellLabs/velashell-plugin-cli/blob/main/docs-en/cli.md#2-installing-from-the-marketplace).
 
 **Method 2: `.vpx` package**. Sidebar plugin icon → Plugin Management page → select the file with "Install .vpx…" (validates the container and manifest, guards against zip slip and zip bombs, extracts into the user directory, replaces the old version for the same id, and activates according to the activation policy). The command-line equivalent is `vela-plugin install <package.vpx>`. Uninstallation is also a one-click operation on the management page (deletes the directory and clears database data).
 
@@ -131,7 +131,7 @@ vela-plugin dev init                          # writes the IDE launch profile
 ```
 
 Then press **F5** in your IDE (profile `VelaShell`). The full command surface is in the
-[CLI manual](https://github.com/joesdu/velashell-plugin-cli/blob/main/docs-en/cli.md); this section explains what it does and why.
+[CLI manual](https://github.com/VelaShellLabs/velashell-plugin-cli/blob/main/docs-en/cli.md); this section explains what it does and why.
 
 #### The host announces itself
 
@@ -437,7 +437,7 @@ Discipline:
 - Attach each control instance to only one panel; a panel is a live control and has no concept of refreshing the entire tree.
 - Localization is the plugin's responsibility: retrieve translations through `context.Host.Locale` and hot-update on `LocaleChanged`.
 - The host automatically closes all of a plugin's panels when the plugin is deactivated.
-- Complete example (compile-time AXAML + bilingual copy + session/remote execution integration): [`plugins/VelaShell.Plugin.HelloWorld`](https://github.com/joesdu/velashell-plugins/tree/main/plugins/VelaShell.Plugin.HelloWorld) (DemoPanelView.axaml).
+- Complete example (compile-time AXAML + bilingual copy + session/remote execution integration): [`plugins/VelaShell.Plugin.HelloWorld`](https://github.com/VelaShellLabs/velashell-plugins/tree/main/plugins/VelaShell.Plugin.HelloWorld) (DemoPanelView.axaml).
 
 ### 5.10 Secrets: Encrypted Secret Storage
 
@@ -567,7 +567,7 @@ The host is a terminal application that is extremely sensitive to memory and lat
 | One process + IPC per plugin (02/04/05) | **Implemented** (`hostMode: "isolated"`, see §6): named pipes + lightweight RPC + heartbeat + automatic crash-restart backoff |
 | Permission system + Broker (06) | Not implemented: v1 targets first-party and self-installed plugins; installation implies trust |
 | UI contribution points / VelaUI (08) | Available: command-palette commands + full Avalonia panels (dockable tabs in inProcess; always separate card windows in isolated processes) + plugin management page. The VelaUI declarative tree is **not being pursued** by user decision; cross-process dock embedding is deprecated (see the notes in 08); sidebar/status-bar mounting points are deferred |
-| `.vpx` packaging / signing / store (03/10) | **Packaging and signing are implemented** (own container + ECDSA signatures, see §12); **the marketplace has a client**: `vela-plugin install/search/update/list/uninstall` against [market.easilynet.top](http://market.easilynet.top) or a self-hosted source (see the [CLI manual](https://github.com/joesdu/velashell-plugin-cli/blob/main/docs-en/cli.md#2-installing-from-the-marketplace)). **A marketplace UI inside the host is still future work** |
+| `.vpx` packaging / signing / store (03/10) | **Packaging and signing are implemented** (own container + ECDSA signatures, see §12); **the marketplace has a client**: `vela-plugin install/search/update/list/uninstall` against [market.easilynet.top](http://market.easilynet.top) or a self-hosted source (see the [CLI manual](https://github.com/VelaShellLabs/velashell-plugin-cli/blob/main/docs-en/cli.md#2-installing-from-the-marketplace)). **A marketplace UI inside the host is still future work** |
 | Activation events / lazy activation (03) | **Implemented**: `onStartup` / `onCommand:<id>` + `contributes.commands` placeholders; other event types (onSessionConnect/onFileOpen, etc.) are deferred |
 | Idle reclamation (04) | **Implemented** (isolated mode + `idlePolicy: "recyclable"`) |
 | secrets / clipboard capability domains (07) | **Implemented** (§5.10/§5.11; without a permission system, installation implies trust) |
@@ -579,7 +579,7 @@ Discipline for adding capabilities: first record them in this file and the corre
 
 `.vpx` is VelaShell's **own container format**, not a renamed zip: general-purpose archivers
 cannot open it, and the host refuses to install a plain zip. The implementation lives in
-[velashell-plugin-sdk](https://github.com/joesdu/velashell-plugin-sdk) `src/VelaShell.PluginSdk/Packaging/VpxContainer.cs`; reading (host install) and writing
+[velashell-plugin-sdk](https://github.com/VelaShellLabs/velashell-plugin-sdk) `src/VelaShell.PluginSdk/Packaging/VpxContainer.cs`; reading (host install) and writing
 (`vela-plugin pack`) share that one file, so "the tool produced a package the host will not take"
 cannot happen.
 
