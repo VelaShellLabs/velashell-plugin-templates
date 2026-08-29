@@ -1,9 +1,9 @@
 # 发版流程(dotnet new 模板)
 
 > 本篇只讲**本仓库**怎么发版。契约 SDK 见
-> [velashell-plugin-sdk](https://github.com/joesdu/velashell-plugin-sdk/blob/main/docs/release-process.md),
+> [velashell-plugin-sdk](https://github.com/VelaShellLabs/velashell-plugin-sdk/blob/main/docs/release-process.md),
 > `vela-plugin` 与 `VelaShell.PluginSdk.Build` 见
-> [velashell-plugin-cli](https://github.com/joesdu/velashell-plugin-cli/blob/main/docs/release-process.md)。
+> [velashell-plugin-cli](https://github.com/VelaShellLabs/velashell-plugin-cli/blob/main/docs/release-process.md)。
 
 本仓库一次发布产出一个包:`VelaShell.Plugin.Templates`。
 
@@ -105,7 +105,7 @@ pwsh scripts/Set-Version.ps1 1.5.1        # 再发一版模板把它带出去
 | --- | --- |
 | Policy name | `velashell-plugin-templates`(随意,能认出来就行) |
 | Policy owner | `joes_du` |
-| Repository Owner | `joesdu` |
+| Repository Owner | `VelaShellLabs` |
 | **Repository** | `velashell-plugin-templates` |
 | **Workflow File** | `release.yml` —— **只填文件名**,不要写 `.github/workflows/` 前缀 |
 | Environment | 留空(工作流没用 GitHub Environments) |

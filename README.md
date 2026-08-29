@@ -28,8 +28,8 @@ Avalonia、清单校验与打包器都随它到位。
 
 | 仓库 | 产出 | 什么时候发 |
 | --- | --- | --- |
-| [`velashell-plugin-sdk`](https://github.com/joesdu/velashell-plugin-sdk) | `VelaShell.PluginSdk`、`.Testing` | 契约有增删改时 |
-| [`velashell-plugin-cli`](https://github.com/joesdu/velashell-plugin-cli) | `VelaShell.Plugin.Cli`(`vela-plugin`)、`VelaShell.PluginSdk.Build` | 工具/打包/MSBuild 逻辑变化时 |
+| [`velashell-plugin-sdk`](https://github.com/VelaShellLabs/velashell-plugin-sdk) | `VelaShell.PluginSdk`、`.Testing` | 契约有增删改时 |
+| [`velashell-plugin-cli`](https://github.com/VelaShellLabs/velashell-plugin-cli) | `VelaShell.Plugin.Cli`(`vela-plugin`)、`VelaShell.PluginSdk.Build` | 工具/打包/MSBuild 逻辑变化时 |
 | **本仓库** `velashell-plugin-templates` | `VelaShell.Plugin.Templates` | 模板内容变化,或要把新建工程指到新版 Build 包时 |
 
 依赖方向是单向的,没有环:
@@ -43,7 +43,7 @@ velashell-plugin-templates  ← 本仓库
 ```
 
 另外两个相关仓库:[joesdu/VelaShell](https://github.com/joesdu/VelaShell)(宿主主程序)、
-[joesdu/velashell-plugins](https://github.com/joesdu/velashell-plugins)(第一方插件)。
+[VelaShellLabs/velashell-plugins](https://github.com/VelaShellLabs/velashell-plugins)(第一方插件)。
 
 ## 本仓库有两个版本号,别混
 

@@ -9,8 +9,8 @@
 
           VelaShell.Plugin.Templates    dotnet new 模板(velaplugin / velaplugin-ui)
 
-      **与其余工具链解耦**(2026-08-27 拆库起):契约 SDK 在 joesdu/velashell-plugin-sdk,
-      vela-plugin 与 VelaShell.PluginSdk.Build 在 joesdu/velashell-plugin-cli,
+      **与其余工具链解耦**(2026-08-27 拆库起):契约 SDK 在 VelaShellLabs/velashell-plugin-sdk,
+      vela-plugin 与 VelaShell.PluginSdk.Build 在 VelaShellLabs/velashell-plugin-cli,
       三者各有各的版本号。模板文案改一行就发一版模板,不必惊动那两个仓库;
       反过来它们发版也不要求模板跟着发。
 
@@ -44,9 +44,9 @@
   	<Authors>joesdu</Authors>
   	<PackagePrefix>VelaShell</PackagePrefix>
   	<RepositoryType>git</RepositoryType>
-  	<RepositoryUrl>https://github.com/joesdu/velashell-plugin-templates</RepositoryUrl>
+  	<RepositoryUrl>https://github.com/VelaShellLabs/velashell-plugin-templates</RepositoryUrl>
   	<PackageLicenseExpression>AGPL-3.0-only</PackageLicenseExpression>
-  	<PackageProjectUrl>https://github.com/joesdu/velashell-plugin-templates</PackageProjectUrl>
+  	<PackageProjectUrl>https://github.com/VelaShellLabs/velashell-plugin-templates</PackageProjectUrl>
   	<PackageReadmeFile>README.md</PackageReadmeFile>
   </PropertyGroup>
 
