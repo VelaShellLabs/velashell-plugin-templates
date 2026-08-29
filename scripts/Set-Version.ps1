@@ -14,14 +14,16 @@
                                   Directory.Build.props
                                   content/velaplugin/.template.config/template.json
                                   content/velaplugin-ui/.template.config/template.json
-                                  docs/dev-guide.md      的 PackageReference 片段
-                                  docs-en/dev-guide.md   的 PackageReference 片段
+                                  zh/templates/dev-guide.md ┐ 这两处在 velashell-docs 仓库,
+                                  en/templates/dev-guide.md ┘ 是**可选**落点,见 -DocsRoot
 
     把它俩分开是拆库的**要点**:「改了模板文案」与「换了插件作者的构建工具链」是性质
     完全不同的两种变更,合成一个数字之后就没法只做前一件。
 
     漏改 ② 的模板落点:新建出来的工程去还原一个旧版包,构建期由 VELA1004 拦下。
     漏改 ② 的文档落点:不报错,但文档是给人照抄的,过期版本号会被原样粘进别人的工程。
+    2026-08-30 全部文档搬到 VelaShellLabs/velashell-docs 之后,那两处不在本仓库的
+    checkout 里,所以找不到就跳过。
 
 .PARAMETER Version
     模板包的目标版本(SemVer)。不给就读 Directory.Build.props 里的当前值。
@@ -29,6 +31,11 @@
 .PARAMETER BuildPackageVersion
     生成的工程要引用的 VelaShell.PluginSdk.Build 版本(SemVer)。
     不给就读 Directory.Build.props 里的当前值 —— 于是"只发一版模板"时不必重复输入它。
+
+.PARAMETER DocsRoot
+    velashell-docs 仓库的位置,dev-guide 的 PackageReference 片段写在那里。默认先看
+    $env:VELASHELL_DOCS,再看与本仓库同级的 ../velashell-docs。找不到就跳过那两处并
+    提醒一句 —— 那是另一个仓库,CI 的 checkout 里本来就没有它,不该因此让流水线变红。
 
 .PARAMETER Check
     只报告不落盘;有任何一处不同步就以退出码 1 结束。
@@ -52,6 +59,7 @@
 param(
     [Parameter(Position = 0)] [string] $Version,
     [string] $BuildPackageVersion,
+    [string] $DocsRoot,
     [switch] $Check
 )
 
@@ -59,6 +67,17 @@ $ErrorActionPreference = 'Stop'
 Set-StrictMode -Version Latest
 
 $root = Split-Path -Parent $PSScriptRoot
+
+# ── velashell-docs 的位置 ────────────────────────────────────────────────────
+# 2026-08-30 起全部文档搬到 VelaShellLabs/velashell-docs,dev-guide 的 PackageReference
+# 片段跟着走了。那是另一个仓库,发版 runner 的 checkout 里没有它 —— 所以这两处是**可选**
+# 落点:本地开发时两个仓库通常并排放着,找得到就一起改;找不到就在末尾提醒一句。
+if (-not $DocsRoot) {
+    $DocsRoot = if ($env:VELASHELL_DOCS) { $env:VELASHELL_DOCS }
+                else { Join-Path (Split-Path -Parent $root) "velashell-docs" }
+}
+$docsAvailable = Test-Path (Join-Path $DocsRoot "zh")
+$skippedDocs = [System.Collections.Generic.List[string]]::new()
 $propsPath = Join-Path $root 'Directory.Build.props'
 $propsText = [IO.File]::ReadAllText($propsPath)
 
@@ -106,9 +125,10 @@ foreach ($template in 'velaplugin', 'velaplugin-ui') {
         Value   = $BuildPackageVersion
     })
 }
-# PackageReference 片段:锚在包 id 上,两份文档各一处。
-foreach ($doc in 'docs/dev-guide.md', 'docs-en/dev-guide.md') {
+# PackageReference 片段:锚在包 id 上,两份文档各一处 —— 都在 velashell-docs 仓库。
+foreach ($doc in "zh/templates/dev-guide.md", "en/templates/dev-guide.md") {
     $edits.Add(@{
+        Repo    = "docs"
         Path    = $doc
         Pattern = '(?<pre><PackageReference Include="VelaShell\.PluginSdk\.Build" Version=")(?<val>[^"]+)(?<post>")'
         What    = 'PackageReference 片段'
@@ -124,7 +144,10 @@ $pending = @{}
 $changed = [System.Collections.Generic.List[object]]::new()
 
 foreach ($edit in $edits) {
-    $path = Join-Path $root $edit.Path
+    $inDocs = $edit.ContainsKey("Repo") -and $edit.Repo -eq "docs"
+    if ($inDocs -and -not $docsAvailable) { $skippedDocs.Add($edit.Path); continue }
+
+    $path = if ($inDocs) { Join-Path $DocsRoot $edit.Path } else { Join-Path $root $edit.Path }
     if (-not (Test-Path $path)) { throw "落点文件不存在:$($edit.Path)" }
 
     if (-not $pending.ContainsKey($path)) { $pending[$path] = [IO.File]::ReadAllText($path) }
@@ -141,7 +164,7 @@ foreach ($edit in $edits) {
     if ($stale.Count -eq 0) { continue }
 
     $changed.Add([pscustomobject]@{
-        File = $edit.Path
+        File = if ($inDocs) { "velashell-docs/" + $edit.Path } else { $edit.Path }
         What = $edit.What
         From = (($stale | ForEach-Object { $_.Groups['val'].Value } | Select-Object -Unique) -join ', ')
         To   = $edit.Value
@@ -160,6 +183,15 @@ if (-not $Check) {
         $hasBom = $bytes.Length -ge 3 -and $bytes[0] -eq 0xEF -and $bytes[1] -eq 0xBB -and $bytes[2] -eq 0xBF
         [IO.File]::WriteAllText($path, $pending[$path], [Text.UTF8Encoding]::new($hasBom))
     }
+}
+
+if ($skippedDocs.Count -gt 0) {
+    Write-Warning @"
+没找到 velashell-docs(试过 $DocsRoot),跳过了这几处文档里的 PackageReference 片段:
+$($skippedDocs -join [Environment]::NewLine)
+文档在 https://github.com/VelaShellLabs/velashell-docs —— 把它 clone 到本仓库同级目录,
+或用 -DocsRoot / `$env:VELASHELL_DOCS 指过去,再跑一次即可一并更新。
+"@
 }
 
 if ($changed.Count -eq 0) {

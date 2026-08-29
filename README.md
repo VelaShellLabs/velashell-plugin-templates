@@ -19,8 +19,10 @@ dotnet build -t:PackVpx          # 出 bin/vpx/*.vpx
 生成的工程只引用一个包(`VelaShell.PluginSdk.Build`),契约程序集、与宿主版本一致的
 Avalonia、清单校验与打包器都随它到位。
 
-细节看 [`docs/dev-guide.md`](docs/dev-guide.md);发布与签名看
-[`docs/publishing.md`](docs/publishing.md);英文版在 [`docs-en/`](docs-en/)。
+细节看[开发指南](https://github.com/VelaShellLabs/velashell-docs/blob/main/zh/templates/dev-guide.md);发布与签名看
+[打包与发布](https://github.com/VelaShellLabs/velashell-docs/blob/main/zh/templates/publishing.md);
+英文版在 [`en/templates/`](https://github.com/VelaShellLabs/velashell-docs/tree/main/en/templates)。
+两者都在文档仓库 [velashell-docs](https://github.com/VelaShellLabs/velashell-docs) 里,不在本仓库。
 
 ## 插件生态的仓库分布
 
@@ -42,8 +44,10 @@ velashell-plugin-cli        vela-plugin + VelaShell.PluginSdk.Build
 velashell-plugin-templates  ← 本仓库
 ```
 
-另外两个相关仓库:[joesdu/VelaShell](https://github.com/joesdu/VelaShell)(宿主主程序)、
-[VelaShellLabs/velashell-plugins](https://github.com/VelaShellLabs/velashell-plugins)(第一方插件)。
+另外三个相关仓库:[joesdu/VelaShell](https://github.com/joesdu/VelaShell)(宿主主程序)、
+[VelaShellLabs/velashell-plugins](https://github.com/VelaShellLabs/velashell-plugins)(第一方插件)、
+[VelaShellLabs/velashell-docs](https://github.com/VelaShellLabs/velashell-docs)(**全部文档**,
+2026-08-30 起各仓库的 `docs/` 都搬到了那里)。
 
 ## 本仓库有两个版本号,别混
 
@@ -55,7 +59,7 @@ velashell-plugin-templates  ← 本仓库
 | `VelaTemplatesVersion` | 模板包自己的版本 | 每次发版。就是 Release 标签里那个 |
 | `VelaBuildPackageVersion` | 生成的工程要引用哪一版 `VelaShell.PluginSdk.Build` | cli 仓库发了新版 `.Build`,而你想让新建工程指过去 |
 
-第二个有五处落点(props、两个 `template.json`、两份 `dev-guide.md`),由脚本统一维护:
+第二个有五处落点(props、两个 `template.json`,以及文档仓库里两份 `dev-guide.md`),由脚本统一维护:
 
 ```powershell
 pwsh scripts/Set-Version.ps1 -BuildPackageVersion 1.5.2   # 只换 Build 包引用
@@ -64,7 +68,9 @@ pwsh scripts/Set-Version.ps1 -Check                       # 体检(CI 用的就�
 ```
 
 漏改 `template.json` 那两处的话,新建出来的工程会去还原一个旧版包 —— 构建期由 `VELA1004`
-拦下。漏改文档那两处不报错,但文档是给人照抄的。
+拦下。漏改文档那两处不报错,但文档是给人照抄的 —— 那两处在
+[velashell-docs](https://github.com/VelaShellLabs/velashell-docs) 仓库,脚本只在它
+clone 在本仓库同级目录时才顺带改(否则跳过并提醒,见 `-DocsRoot`)。
 
 **不抬 `VelaBuildPackageVersion` 完全正常**:新建的工程继续引用上一版 `.Build`,那是可用的,
 不是遗漏。
@@ -95,7 +101,7 @@ pwsh scripts/Set-Version.ps1 1.5.1     # 落版本号,连同改动合进 main
                                         # 再在 GitHub 上发 Release,标签 v1.5.1
 ```
 
-完整流程见 [`docs/release-process.md`](docs/release-process.md)。
+完整流程见[发版流程](https://github.com/VelaShellLabs/velashell-docs/blob/main/zh/templates/release-process.md)(在文档仓库)。
 
 ## 许可
 
