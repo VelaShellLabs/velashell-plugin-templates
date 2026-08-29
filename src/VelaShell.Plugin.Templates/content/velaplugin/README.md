@@ -44,7 +44,7 @@ dotnet build -c Release -t:PackVpx -p:VelaSigningKey=/path/to/key.pem
 ```
 
 `.vpx` 在 VelaShell 的插件管理页"安装 .vpx…"一键装上。发布到插件商店见
-<https://github.com/VelaShellLabs/velashell-plugin-templates/blob/main/docs/publishing.md>。
+<https://github.com/VelaShellLabs/velashell-docs/blob/main/zh/templates/publishing.md>。
 
 ## 要点
 
@@ -53,5 +53,5 @@ dotnet build -c Release -t:PackVpx -p:VelaSigningKey=/path/to/key.pem
   自己另外引用别的版本会在构建期直接报错(VELA1001)。
 - `VelaShell.PluginSdk.dll` 与 `Avalonia*.dll` 永远不进插件目录:装载器强制共享宿主那一套。
 
-完整开发指南:<https://github.com/VelaShellLabs/velashell-plugin-templates/blob/main/docs/dev-guide.md>
-命令行工具手册:<https://github.com/VelaShellLabs/velashell-plugin-cli/blob/main/docs/cli.md>
+完整开发指南:<https://github.com/VelaShellLabs/velashell-docs/blob/main/zh/templates/dev-guide.md>
+命令行工具手册:<https://github.com/VelaShellLabs/velashell-docs/blob/main/zh/cli/cli.md>

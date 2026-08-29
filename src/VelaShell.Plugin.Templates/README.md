@@ -31,7 +31,7 @@ dotnet new velaplugin-ui -n Dashboard --publisher acme --hostMode isolated
 
 卸载模板:`dotnet new uninstall VelaShell.Plugin.Templates`。
 
-完整开发指南:<https://github.com/VelaShellLabs/velashell-plugin-templates/blob/main/docs/dev-guide.md>
+完整开发指南:<https://github.com/VelaShellLabs/velashell-docs/blob/main/zh/templates/dev-guide.md>
 
 ## 生成之后
 
@@ -45,5 +45,5 @@ vela-plugin dev init      # 配好 IDE 启动配置,然后按 F5 断点调试
 生成的启动配置用独立数据根起一个调试实例,于是日常那份 VelaShell 可以一直开着。
 改完代码 `dotnet build`,在插件管理页点"重新加载"即可跑上新代码。
 
-- 命令行手册:<https://github.com/VelaShellLabs/velashell-plugin-cli/blob/main/docs/cli.md>
-- 打包与发布:<https://github.com/VelaShellLabs/velashell-plugin-templates/blob/main/docs/publishing.md>
+- 命令行手册:<https://github.com/VelaShellLabs/velashell-docs/blob/main/zh/cli/cli.md>
+- 打包与发布:<https://github.com/VelaShellLabs/velashell-docs/blob/main/zh/templates/publishing.md>
