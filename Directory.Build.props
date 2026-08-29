@@ -61,11 +61,6 @@
   	<NoWarn>$(NoWarn);IDE0047;</NoWarn>
   </PropertyGroup>
 
-  <PropertyGroup>
-    <VelaRepoRoot>$(MSBuildThisFileDirectory)</VelaRepoRoot>
-    <VelaArtifactsDir Condition="'$(VelaArtifactsDir)' == ''">$(VelaRepoRoot)artifacts</VelaArtifactsDir>
-  </PropertyGroup>
-
   <!--
     ⚠️ 本仓库不产出任何程序集,因此既不签名也不需要 STRONG_NAME_KEY。
     模板包只有 content/,没有 lib/。
