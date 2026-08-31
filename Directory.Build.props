@@ -16,7 +16,7 @@
 
       CI 发包时用 -p:VelaTemplatesVersion= 覆盖(取自 Release 标签)。
     -->
-    <VelaTemplatesVersion Condition="'$(VelaTemplatesVersion)' == ''">1.5.0</VelaTemplatesVersion>
+    <VelaTemplatesVersion Condition="'$(VelaTemplatesVersion)' == ''">2.0.0</VelaTemplatesVersion>
     <Version>$(VelaTemplatesVersion)</Version>
   </PropertyGroup>
 
@@ -37,7 +37,7 @@
       抬它的时机:velashell-plugin-cli 发了新版 .Build 包,而你希望新建的工程指过去。
       **不抬也完全正常** —— 新建的工程继续引用上一版,那是可用的,不是遗漏。
     -->
-    <VelaBuildPackageVersion Condition="'$(VelaBuildPackageVersion)' == ''">1.5.0</VelaBuildPackageVersion>
+    <VelaBuildPackageVersion Condition="'$(VelaBuildPackageVersion)' == ''">2.0.0</VelaBuildPackageVersion>
   </PropertyGroup>
 
   <PropertyGroup>
