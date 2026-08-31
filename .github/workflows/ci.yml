@@ -46,13 +46,31 @@ jobs:
 
       # 版本号同步体检。不带参数的 -Check 就是「拿 Directory.Build.props 里的当前值
       # 核对全部落点」—— 两个模板的 template.json 与两份 dev-guide 的 PackageReference 片段。
+      # 【为什么 PR 上只提醒、不判红】发布产物**不依赖**仓库当时的版本状态:release.yml 会在
+      # runner 上按标签重跑 Set-Version.ps1,把全部落点改写一遍。所以落点漂移伤的是**人**
+      # (照着过期文档抄 PackageReference 的那一行),不是发布正确性 —— 拿仓库卫生问题
+      # 挡住别人的 PR 不成比例,何况提 PR 的人多半不是造成漂移的那个。
+      #
+      # push 到 main/dev 仍然判红:那时仓库确实处在不诚实的状态,而且此刻有能力修它的人
+      # 就是刚把代码合进来的那个。
+      #
+      # ⚠️ 本仓库有两处落点在**另一个仓库**(velashell-docs 的两份 dev-guide)。CI 不 checkout
+      # 它,脚本会跳过并警告 —— 所以那两处**在 CI 上永远不会被核对到**,只有本地把
+      # velashell-docs clone 在同级目录时才查得出来。这是这条体检在 CI 与本地表现不一致的
+      # 唯一原因,别误以为是降级逻辑漏了什么。
       - name: Version consistency check
         shell: pwsh
         run: |
           & ./scripts/Set-Version.ps1 -Check
           # if ($LASTEXITCODE) 而不是 -ne 0:.ps1 不调用 exit 时**不会设置** $LASTEXITCODE,
           # 那时它是 $null —— 而 `$null -ne 0` 为真,会把一次成功判成失败。
-          if ($LASTEXITCODE) { exit $LASTEXITCODE }
+          if ($LASTEXITCODE) {
+            if ('${{ github.event_name }}' -eq 'pull_request') {
+              Write-Host "::warning title=版本号落点不同步::跑 ``pwsh scripts/Set-Version.ps1 <版本> -BuildPackageVersion <Build 包版本>`` 修正。PR 上只提醒,合进 main/dev 后会判红。"
+              exit 0
+            }
+            exit $LASTEXITCODE
+          }
 
       - name: Pack
         shell: pwsh
