@@ -8,7 +8,7 @@
   "author": "AUTHOR_NAME",
   "publisher": "PUBLISHER_ID",
   "entry": "VelaPlugin1.dll",
-  "apiLevel": 1,
+  "apiLevel": 2,
   // inProcess:面板可停靠进主窗口标签区。isolated:面板是独立卡片窗口。
   "hostMode": "HOST_MODE",
   // 惰性激活:用户触发这条命令时才装载本插件的程序集。
