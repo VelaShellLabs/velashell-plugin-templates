@@ -84,3 +84,7 @@ pwsh scripts/Invoke-Smoke.ps1 -Feed ./artifacts/nuget -Version <版本> -BuildPa
 
 `README.md`、`LICENSE`,以及模板内容里给使用者看的 `content/*/README.md`
 (它们随 `dotnet new` 生成到用户工程里,必须留在包内)。
+
+### 提交约束
+
+- **所有提交信息与 PR 描述都不要附加 Claude Code 等 AI 工具的作者信息** —— 不加 `Co-Authored-By: Claude …` 行,也不加 `🤖 Generated with Claude Code` 之类的署名。VelaShellLabs 下所有仓库一致适用。
