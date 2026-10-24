@@ -4,7 +4,7 @@
     <PackageType>Template</PackageType>
     <PackageId>VelaShell.Plugin.Templates</PackageId>
     <Title>VelaShell plugin templates</Title>
-    <Description>VelaShell 插件工程的 dotnet new 模板:velaplugin(基础)与 velaplugin-ui(带 Avalonia 面板)。`dotnet new install VelaShell.Plugin.Templates` 后即可用。</Description>
+    <Description>VelaShell 插件工程的 dotnet new 模板:velaplugin(基础)、velaplugin-ui(带 Avalonia 面板)、velaplugin-protocol(终端协议)与 velaplugin-workspace(工作台连接类型)。`dotnet new install VelaShell.Plugin.Templates` 后即可用。</Description>
     <PackageTags>dotnet-new;templates;velashell;plugin</PackageTags>
 
     <!-- 模板包只有内容,没有程序集。 -->

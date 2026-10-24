@@ -7,7 +7,7 @@
     <!--
       本仓库产出一个包:
 
-          VelaShell.Plugin.Templates    dotnet new 模板(velaplugin / velaplugin-ui)
+          VelaShell.Plugin.Templates    dotnet new 模板(velaplugin / velaplugin-ui / velaplugin-protocol / velaplugin-workspace)
 
       **与其余工具链解耦**(2026-08-27 拆库起):契约 SDK 在 VelaShellLabs/velashell-plugin-sdk,
       vela-plugin 与 VelaShell.PluginSdk.Build 在 VelaShellLabs/velashell-plugin-cli,
@@ -29,7 +29,7 @@
       「换了插件作者的构建工具链」这两种性质完全不同的变更长得一模一样。
 
       落点两处,由 scripts/Set-Version.ps1 的 -BuildPackageVersion 统一维护:
-        · 两个模板的 .template.config/template.json 里 sdkVersion 的 defaultValue;
+        · 四个模板的 .template.config/template.json 里 sdkVersion 的 defaultValue;
         · docs{,-en}/dev-guide.md 里那段 PackageReference 片段。
       漏了第一处:新建出来的工程去还原一个旧包(构建期由 VELA1004 拦下)。
       漏了第二处:文档是给人照抄的,过期版本号会被原样粘进别人的工程。
