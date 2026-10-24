@@ -1,0 +1,83 @@
+{
+  "$schema": "http://json.schemastore.org/template",
+  "author": "joesdu",
+  "classifications": [ "VelaShell", "Plugin", "Protocol" ],
+  "identity": "VelaShell.Plugin.Protocol.CSharp",
+  "groupIdentity": "VelaShell.Plugin.Protocol",
+  "name": "VelaShell protocol plugin",
+  "description": "A VelaShell plugin that adds a terminal connection protocol (declarative connection form, byte-pipe session over TCP, error mapping), with a test project and a local echo server to try it against.",
+  "shortName": "velaplugin-protocol",
+  "defaultName": "VelaPlugin1",
+  "sourceName": "VelaPlugin1",
+  "preferNameDirectory": true,
+  "tags": {
+    "language": "C#",
+    "type": "project"
+  },
+  "symbols": {
+    "publisher": {
+      "type": "parameter",
+      "datatype": "text",
+      "defaultValue": "acme",
+      "replaces": "PUBLISHER_ID",
+      "description": "Publisher segment of the plugin id (lowercase, [a-z0-9-])."
+    },
+    "authorName": {
+      "type": "parameter",
+      "datatype": "text",
+      "defaultValue": "",
+      "replaces": "AUTHOR_NAME",
+      "description": "Author shown on the plugin manager page."
+    },
+    "sdkVersion": {
+      "type": "parameter",
+      "datatype": "text",
+      "defaultValue": "2.0.9",
+      "replaces": "SDK_VERSION",
+      "description": "Version of the VelaShell.PluginSdk.Build package to reference (the test project references VelaShell.PluginSdk.Testing at the same version)."
+    },
+    "pluginId": {
+      "type": "parameter",
+      "datatype": "text",
+      "defaultValue": "",
+      "description": "Full plugin id. Defaults to <publisher>.<name lowercased>; set it explicitly when that is not what you want."
+    },
+    "nameLower": {
+      "type": "generated",
+      "generator": "casing",
+      "parameters": {
+        "source": "name",
+        "toLower": true
+      }
+    },
+    "pluginIdJoined": {
+      "type": "generated",
+      "generator": "join",
+      "parameters": {
+        "symbols": [
+          { "type": "ref", "value": "publisher" },
+          { "type": "const", "value": "." },
+          { "type": "ref", "value": "nameLower" }
+        ]
+      }
+    },
+    "pluginIdFinal": {
+      "type": "generated",
+      "generator": "coalesce",
+      "replaces": "PLUGIN_ID",
+      "parameters": {
+        "sourceVariableName": "pluginId",
+        "fallbackVariableName": "pluginIdJoined"
+      }
+    }
+  },
+  "sources": [
+    {
+      "modifiers": [
+        {
+          "exclude": [ "**/bin/**", "**/obj/**", "**/vpx/**", "**/TestResults/**" ]
+        }
+      ]
+    }
+  ]
+}

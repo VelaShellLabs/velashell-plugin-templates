@@ -39,14 +39,16 @@ VelaShell 生态的**全部文档**集中在一个仓库:
 
 ## 三、本仓库:velashell-plugin-templates(dotnet new 模板)
 
-产出 `VelaShell.Plugin.Templates`:`velaplugin`(基础)与 `velaplugin-ui`(带 Avalonia 面板)。
+产出 `VelaShell.Plugin.Templates`:`velaplugin`(基础)、`velaplugin-ui`(带 Avalonia 面板)、
+`velaplugin-protocol`(终端协议)与 `velaplugin-workspace`(工作台连接类型)。后两个自带测试工程
+(`<名称>.Tests/`)与本机试跑用的回显服务(`tools/EchoServer.cs`),两者都不进 `.vpx`。
 
 ### 构建与冒烟
 
 ```bash
 dotnet build VelaShell.Plugin.Templates.slnx
 
-# 冒烟:装上刚打出的模板包,像插件作者一样走一遍(两个模板都走)
+# 冒烟:装上刚打出的模板包,像插件作者一样走一遍(四个模板都走,自带的测试工程也跑)
 dotnet pack src/VelaShell.Plugin.Templates/VelaShell.Plugin.Templates.csproj -c Release -o artifacts/nuget
 pwsh scripts/Invoke-Smoke.ps1 -Feed ./artifacts/nuget -Version <版本> -BuildPackageVersion <版本>
 ```
@@ -54,6 +56,10 @@ pwsh scripts/Invoke-Smoke.ps1 -Feed ./artifacts/nuget -Version <版本> -BuildPa
 冒烟不是形式:模板包是纯内容包,`dotnet pack` 成功**几乎什么都不能说明** —— 真正会出问题的
 地方全在包装好之后(`.template.config` 以点开头,没开 `NoDefaultExcludes` 就不会进包,
 而且不报错,只是 `dotnet new` 列表里看不见它)。
+
+**新增模板时要改两份清单**:`scripts/Invoke-Smoke.ps1` 的模板循环(否则冒烟根本不走它)与
+`scripts/Set-Version.ps1` 的 `template.json` 落点(否则它的 `sdkVersion` 默认值不跟着动,构建期由
+`VELA1004` 拦下)。
 
 ### 两个版本号,别混
 
@@ -64,14 +70,14 @@ pwsh scripts/Invoke-Smoke.ps1 -Feed ./artifacts/nuget -Version <版本> -BuildPa
 
 **不抬 `VelaBuildPackageVersion` 完全正常**,不是遗漏。
 
-### 五处落点里有两处在 velashell-docs
+### 七处落点里有两处在 velashell-docs
 
-`VelaBuildPackageVersion` 的落点:`Directory.Build.props`、两个 `template.json`,
+`VelaBuildPackageVersion` 的落点:`Directory.Build.props`、四个 `template.json`,
 以及**另一个仓库里的** `zh/templates/dev-guide.md` 与 `en/templates/dev-guide.md` 的
 `PackageReference` 片段。`scripts/Set-Version.ps1` 按 `-DocsRoot` →
 `$env:VELASHELL_DOCS` → 同级 `../velashell-docs` 找,找不到就跳过并警告。
 
-漏改 `template.json` 那两处:新建工程会还原一个旧版包,构建期由 `VELA1004` 拦下。
+漏改 `template.json` 那四处:新建工程会还原一个旧版包,构建期由 `VELA1004` 拦下。
 漏改文档那两处:不报错,但文档是给人照抄的,过期版本号会被原样粘进别人的工程。
 
 **改了模板的结构、参数或生成结果,必须同步改 velashell-docs 的

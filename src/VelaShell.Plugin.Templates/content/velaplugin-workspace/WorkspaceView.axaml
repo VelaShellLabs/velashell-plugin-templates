@@ -1,0 +1,80 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="VelaPlugin1.WorkspaceView">
+
+  <!--
+    工作台文档的内容。宿主把它挂进停靠区,外面那层标签页(标题、图标、状态圆点、"重连")是宿主的。
+
+    主题令牌:颜色、字号、字体一律 {DynamicResource Vela*},面板就随宿主明暗与外观设置一起变。
+    别写死颜色和字号 —— 写死的那一处就等于该处的外观设置失效。几何取宿主 DESIGN.md 的
+    36px 文档头 / 24px 状态条。文案不写在这里:由代码按 Loc 填(见 WorkspaceView.axaml.cs)。
+
+    ✏️ 这是一个按行收发的示例面板:左边是收发记录与输入行,右边是这条连接的配置摘要与最近发送。
+       换成你的界面即可;规模上来了就换 MVVM(第一方插件各带一个八十行的 ObservableObject,
+       刻意不引 ReactiveUI —— 它在插件 ALC 里的调度器不会自动挂到宿主的 UI 线程上)。
+  -->
+  <DockPanel Background="{DynamicResource VelaBgSurface}">
+
+    <!-- 文档头 -->
+    <Border DockPanel.Dock="Top" Height="36" Padding="12,0"
+            BorderBrush="{DynamicResource VelaBorderPrimary}" BorderThickness="0,0,0,1">
+      <StackPanel Orientation="Horizontal" Spacing="12" VerticalAlignment="Center">
+        <TextBlock x:Name="TitleText"
+                   VerticalAlignment="Center"
+                   FontWeight="SemiBold"
+                   FontFamily="{DynamicResource VelaUiFont}"
+                   FontSize="{DynamicResource VelaFontSize14}"
+                   Foreground="{DynamicResource VelaTextPrimary}" />
+        <TextBlock x:Name="EndpointText"
+                   VerticalAlignment="Center"
+                   FontFamily="{DynamicResource VelaUiMonoFont}"
+                   FontSize="{DynamicResource VelaFontSize12}"
+                   Foreground="{DynamicResource VelaTextSecondary}" />
+      </StackPanel>
+    </Border>
+
+    <!-- 状态条 -->
+    <Border DockPanel.Dock="Bottom" Height="24" Padding="12,0"
+            BorderBrush="{DynamicResource VelaBorderPrimary}" BorderThickness="0,1,0,0">
+      <TextBlock x:Name="StatusText"
+                 VerticalAlignment="Center"
+                 FontSize="{DynamicResource VelaFontSize12}"
+                 Foreground="{DynamicResource VelaTextMuted}" />
+    </Border>
+
+    <!-- 右栏:这条连接的配置摘要 + 最近发送(跨会话留存) -->
+    <Border DockPanel.Dock="Right" Width="260" Padding="12,10"
+            BorderBrush="{DynamicResource VelaBorderPrimary}" BorderThickness="1,0,0,0">
+      <DockPanel>
+        <TextBlock x:Name="ConnectionHeader" DockPanel.Dock="Top" Margin="0,0,0,6"
+                   FontSize="{DynamicResource VelaFontSize11}"
+                   Foreground="{DynamicResource VelaTextMuted}" />
+        <ItemsControl x:Name="ConnectionList" DockPanel.Dock="Top" Margin="0,0,0,14"
+                      FontSize="{DynamicResource VelaFontSize12}"
+                      Foreground="{DynamicResource VelaTextSecondary}" />
+        <TextBlock x:Name="HistoryHeader" DockPanel.Dock="Top" Margin="0,0,0,6"
+                   FontSize="{DynamicResource VelaFontSize11}"
+                   Foreground="{DynamicResource VelaTextMuted}" />
+        <ListBox x:Name="HistoryList"
+                 FontFamily="{DynamicResource VelaUiMonoFont}"
+                 FontSize="{DynamicResource VelaFontSize12}" />
+      </DockPanel>
+    </Border>
+
+    <!-- 输入行 -->
+    <Grid DockPanel.Dock="Bottom" ColumnDefinitions="*,Auto" Margin="12,8">
+      <TextBox x:Name="InputBox"
+               FontFamily="{DynamicResource VelaUiMonoFont}"
+               FontSize="{DynamicResource VelaFontSize12}" />
+      <Button x:Name="SendButton" Grid.Column="1" Margin="8,0,0,0" />
+    </Grid>
+
+    <!-- 收发记录(填满剩余空间) -->
+    <ListBox x:Name="TranscriptList"
+             Margin="12,10,12,0"
+             FontFamily="{DynamicResource VelaUiMonoFont}"
+             FontSize="{DynamicResource VelaFontSize12}"
+             Foreground="{DynamicResource VelaTextPrimary}" />
+  </DockPanel>
+
+</UserControl>

@@ -10,10 +10,12 @@
                                 落点只有 Directory.Build.props 一处。
 
       ② VelaBuildPackageVersion `dotnet new velaplugin` 生成的工程要引用哪一版
-                                VelaShell.PluginSdk.Build。落点五处:
+                                VelaShell.PluginSdk.Build。落点七处:
                                   Directory.Build.props
                                   content/velaplugin/.template.config/template.json
                                   content/velaplugin-ui/.template.config/template.json
+                                  content/velaplugin-protocol/.template.config/template.json
+                                  content/velaplugin-workspace/.template.config/template.json
                                   zh/templates/dev-guide.md ┐ 这两处在 velashell-docs 仓库,
                                   en/templates/dev-guide.md ┘ 是**可选**落点,见 -DocsRoot
 
@@ -117,7 +119,8 @@ $edits.Add(@{
     What    = 'VelaBuildPackageVersion'
     Value   = $BuildPackageVersion
 })
-foreach ($template in 'velaplugin', 'velaplugin-ui') {
+# 新增模板时把它加进这里 —— 漏了的话它的 sdkVersion 默认值不跟着动,构建期由 VELA1004 拦下。
+foreach ($template in 'velaplugin', 'velaplugin-ui', 'velaplugin-protocol', 'velaplugin-workspace') {
     $edits.Add(@{
         Path    = "src/VelaShell.Plugin.Templates/content/$template/.template.config/template.json"
         Pattern = '(?<pre>"sdkVersion":\s*\{[\s\S]*?"defaultValue":\s*")(?<val>[^"]+)(?<post>")'

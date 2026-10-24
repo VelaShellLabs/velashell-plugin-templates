@@ -2,7 +2,7 @@
 #
 # 一次发布产出一个 NuGet 包:
 #
-#      VelaShell.Plugin.Templates    dotnet new 模板(velaplugin / velaplugin-ui)
+#      VelaShell.Plugin.Templates    dotnet new 模板(velaplugin / velaplugin-ui / velaplugin-protocol / velaplugin-workspace)
 #
 # **另外四个包不在这里发**(2026-08-27 拆库起):
 #      VelaShell.PluginSdk / .Testing ………………………… VelaShellLabs/velashell-plugin-sdk
@@ -18,7 +18,7 @@
 #    发版只动前者。要动后者(velashell-plugin-cli 发了新版 .Build,你想让新建工程指过去)
 #    是一次**独立的**改动:
 #      pwsh scripts/Set-Version.ps1 -BuildPackageVersion <新版本>
-#    它会同时改两个模板的 template.json 与两份 dev-guide 的 PackageReference 片段,
+#    它会同时改四个模板的 template.json 与两份 dev-guide 的 PackageReference 片段,
 #    然后随便发一版模板把它带出去。不动也完全正常 —— 新建的工程继续引用上一版,那是可用的。
 #
 # 📌 发版两步:
@@ -122,7 +122,7 @@ jobs:
           Get-ChildItem artifacts/nuget | Select-Object -ExpandProperty Name
 
       # 端到端冒烟:装上刚打出的模板包,像插件作者一样新建工程、还原、构建、出 .vpx。
-      # 两个模板都走。任何一步失败都不该发出去。
+      # 四个模板都走(协议 / 工作台模板连同自带的测试工程一起跑)。任何一步失败都不该发出去。
       #
       # 注意这一步会去 nuget.org 取 VelaShell.PluginSdk.Build —— 也就是说它顺带验证了
       # VelaBuildPackageVersion 指向的那一版**真的已经发布**。指到一个还没发的版本上,

@@ -45,7 +45,7 @@ jobs:
           Write-Host "templates $version, generated projects reference VelaShell.PluginSdk.Build $buildVersion"
 
       # 版本号同步体检。不带参数的 -Check 就是「拿 Directory.Build.props 里的当前值
-      # 核对全部落点」—— 两个模板的 template.json 与两份 dev-guide 的 PackageReference 片段。
+      # 核对全部落点」—— 四个模板的 template.json 与两份 dev-guide 的 PackageReference 片段。
       # 【为什么 PR 上只提醒、不判红】发布产物**不依赖**仓库当时的版本状态:release.yml 会在
       # runner 上按标签重跑 Set-Version.ps1,把全部落点改写一遍。所以落点漂移伤的是**人**
       # (照着过期文档抄 PackageReference 的那一行),不是发布正确性 —— 拿仓库卫生问题
@@ -85,7 +85,7 @@ jobs:
       # 端到端冒烟。模板包是纯内容包,`dotnet pack` 成功几乎什么都不能说明 ——
       # 真正会出问题的地方全在包装好之后(.template.config 没进包因而模板"看不见"、
       # sdkVersion 指向一个不存在的 Build 包版本、示例代码用到了老 Build 包没有的 API)。
-      # 所以必须真的装一次、真的生成一次、真的构建一次。两个模板都走。
+      # 所以必须真的装一次、真的生成一次、真的构建一次。四个模板都走(后两个连同自带的测试工程一起跑)。
       # 细节见 scripts/Invoke-Smoke.ps1 的注释。
       - name: Smoke test (dotnet new -> build -> .vpx)
         shell: pwsh

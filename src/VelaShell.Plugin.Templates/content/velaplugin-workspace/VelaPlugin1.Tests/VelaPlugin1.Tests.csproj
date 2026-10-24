@@ -1,0 +1,37 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net11.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <IsPackable>false</IsPackable>
+    <!-- 契约程序集与插件程序集都带 RequiresPreviewFeatures。插件工程由
+         VelaShell.PluginSdk.Build 打开这一项,测试工程不导入那个包的 targets,得自己开 ——
+         否则碰到 IVelaPlugin / IPluginContext 的每一行都报 CA2252。 -->
+    <EnablePreviewFeatures>true</EnablePreviewFeatures>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="18.11.0" />
+    <PackageReference Include="MSTest.TestAdapter" Version="4.5.1" />
+    <PackageReference Include="MSTest.TestFramework" Version="4.5.1" />
+    <!-- TestPluginContext 与各能力的内存替身:不起宿主即可驱动 ActivateAsync、
+         取出注册的连接类型描述、打开文档。与插件引用的 VelaShell.PluginSdk.Build 同版本
+         (三个包同一次发布)。 -->
+    <PackageReference Include="VelaShell.PluginSdk.Testing" Version="SDK_VERSION" />
+    <!-- 这里的测试刻意不碰 WorkspaceView:SDK 包把 Avalonia 设成 compile-only(运行时由宿主共享),
+         这份排除会沿 ProjectReference 传过来,测试输出目录里没有 Avalonia 的 dll ——
+         一旦 JIT 到引用了 Avalonia 类型的方法就是 FileNotFoundException。
+         要测面板(headless 装载、点按钮):在这里引 Avalonia、Avalonia.Headless、Avalonia.Themes.Fluent,
+         版本**必须**等于 VelaShell.PluginSdk.Build 锁定的那一版(构建输出里的 VelaSdkPinnedAvaloniaVersion)。 -->
+  </ItemGroup>
+
+  <ItemGroup>
+    <Using Include="Microsoft.VisualStudio.TestTools.UnitTesting" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\VelaPlugin1.csproj" />
+  </ItemGroup>
+
+</Project>

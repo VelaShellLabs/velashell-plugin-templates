@@ -1,0 +1,30 @@
+{
+  // 插件 id:<发布者>.<名称>,小写 [a-z0-9.-]。它同时是命令 id 的前缀、连接类型 id 的前缀、
+  // 插件私有数据与机密的命名空间 —— 发布之后不要再改,改了等于让老用户的配置失联。
+  "id": "PLUGIN_ID",
+  "version": "0.1.0",
+  "displayName": "VelaPlugin1",
+  "description": "A VelaShell workspace plugin.",
+  "author": "AUTHOR_NAME",
+  "publisher": "PUBLISHER_ID",
+  "entry": "VelaPlugin1.dll",
+  "apiLevel": 2,
+  // 用到了 SDK 2.0.4 才有的 PluginIcon(会话标签页的图标)。apiLevel 只在破坏性变更时才动,
+  // 表达不了"要 2.0.4 以上",不声明的话老宿主会把插件装上,直到用户打开会话才抛
+  // MissingMethodException。用到更新的 SDK 面时把这里一起抬上去;删掉图标可以降回去。
+  "minSdkVersion": "2.0.4",
+  // 工作台能力**只在 inProcess 下可用**:宿主要向插件索取一个 Avalonia 控件挂进停靠区,
+  // 而原生控件无法跨进程嵌入。写成 isolated 的清单会在发现期被拒绝。
+  "hostMode": "inProcess",
+  // 惰性激活:用户在连接配置页点到本页签(或打开一条本类型的会话)才装载本程序集。
+  "activationEvents": [ "onWorkspace:PLUGIN_ID" ],
+  "contributes": {
+    // 声明式连接页签:发现期就画进连接配置页,**不装载程序集**;连接表单在激活后
+    // 由 WorkspaceDescriptor 补齐(见 PluginMain.cs)。
+    // id 必须等于插件 id,或以 "<插件id>." 开头,且不得与本清单里的协议 id 相撞;
+    // 它落进用户的会话配置,发布后不可更改。
+    "workspaces": [
+      { "id": "PLUGIN_ID", "displayName": "VelaPlugin1", "defaultPort": 7007 }
+    ]
+  }
+}
