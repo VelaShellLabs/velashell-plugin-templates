@@ -5,7 +5,18 @@
 
 | 包 | 内容 |
 | --- | --- |
-| [`VelaShell.Plugin.Templates`](https://www.nuget.org/packages/VelaShell.Plugin.Templates) | `velaplugin`(基础)与 `velaplugin-ui`(带 Avalonia 面板) |
+| [`VelaShell.Plugin.Templates`](https://www.nuget.org/packages/VelaShell.Plugin.Templates) | 四个模板,见下表 |
+
+| 模板 | 短名 | 给出什么 |
+| --- | --- | --- |
+| VelaShell plugin | `velaplugin` | 入口类 + 一条命令 + `plugin.json`,可直接出 `.vpx` |
+| VelaShell plugin with a panel | `velaplugin-ui` | 上面的一切 + 一个 Avalonia 面板(AXAML) |
+| VelaShell protocol plugin | `velaplugin-protocol` | 一种**终端协议**(`Protocols` 能力):声明式连接表单、TCP 之上的字节双工会话、错误翻译;自带测试工程与本机回显服务 |
+| VelaShell workspace plugin | `velaplugin-workspace` | 一种**工作台连接类型**(`Workspaces` 能力):声明式表单(含 SSH 隧道)、Avalonia 文档面板、按端点留存的界面状态;自带测试工程与本机回显服务 |
+
+后两个是从第一方插件(Telnet / 串口 / Redis / S3 / Docker 面板)里沉淀出来的公共骨架,
+只放骨架、不放业务:清单字段、能力注册、语言切换时的重注册、错误上报约定、`PluginIcon`、
+插件自带文案表,以及用 `VelaShell.PluginSdk.Testing` 写的那几条契约测试。
 
 ## 快速上手
 
@@ -14,6 +25,16 @@ dotnet new install VelaShell.Plugin.Templates
 dotnet new velaplugin-ui -n MyPlugin --publisher acme --authorName "Your Name"
 cd MyPlugin
 dotnet build -t:PackVpx          # 出 bin/vpx/*.vpx
+```
+
+协议插件与工作台插件同样一条命令起步,生成的工程里多一个测试工程:
+
+```bash
+dotnet new velaplugin-protocol -n Modbus --publisher acme      # 终端协议
+dotnet new velaplugin-workspace -n Kafka --publisher acme      # 工作台连接类型
+cd Kafka
+dotnet test Kafka.Tests                                        # 不起宿主即可跑
+dotnet run --file tools/EchoServer.cs                          # 本机试跑用的回显服务
 ```
 
 生成的工程只引用一个包(`VelaShell.PluginSdk.Build`),契约程序集、与宿主版本一致的
@@ -59,7 +80,7 @@ velashell-plugin-templates  ← 本仓库
 | `VelaTemplatesVersion` | 模板包自己的版本 | 每次发版。就是 Release 标签里那个 |
 | `VelaBuildPackageVersion` | 生成的工程要引用哪一版 `VelaShell.PluginSdk.Build` | cli 仓库发了新版 `.Build`,而你想让新建工程指过去 |
 
-第二个有五处落点(props、两个 `template.json`,以及文档仓库里两份 `dev-guide.md`),由脚本统一维护:
+第二个有七处落点(props、四个 `template.json`,以及文档仓库里两份 `dev-guide.md`),由脚本统一维护:
 
 ```powershell
 pwsh scripts/Set-Version.ps1 -BuildPackageVersion 1.5.2   # 只换 Build 包引用
@@ -67,7 +88,7 @@ pwsh scripts/Set-Version.ps1 1.5.1                        # 只发一版模板
 pwsh scripts/Set-Version.ps1 -Check                       # 体检(CI 用的就是这个)
 ```
 
-漏改 `template.json` 那两处的话,新建出来的工程会去还原一个旧版包 —— 构建期由 `VELA1004`
+漏改 `template.json` 那几处的话,新建出来的工程会去还原一个旧版包 —— 构建期由 `VELA1004`
 拦下。漏改文档那两处不报错,但文档是给人照抄的 —— 那两处在
 [velashell-docs](https://github.com/VelaShellLabs/velashell-docs) 仓库,脚本只在它
 clone 在本仓库同级目录时才顺带改(否则跳过并提醒,见 `-DocsRoot`)。
@@ -80,7 +101,7 @@ clone 在本仓库同级目录时才顺带改(否则跳过并提醒,见 `-DocsRo
 ```bash
 dotnet build VelaShell.Plugin.Templates.slnx
 
-# 端到端冒烟:装上刚打出的模板包,像插件作者一样走一遍(两个模板都走)
+# 端到端冒烟:装上刚打出的模板包,像插件作者一样走一遍(四个模板都走,自带的测试工程也跑)
 dotnet pack src/VelaShell.Plugin.Templates/VelaShell.Plugin.Templates.csproj -c Release -o artifacts/nuget
 pwsh scripts/Invoke-Smoke.ps1 -Feed ./artifacts/nuget -Version 1.5.0 -BuildPackageVersion 1.5.0
 ```
