@@ -1,0 +1,30 @@
+{
+  // 插件 id:<发布者>.<名称>,小写 [a-z0-9.-]。它同时是命令 id 的前缀、协议 id 的前缀、
+  // 插件私有数据与机密的命名空间 —— 发布之后不要再改,改了等于让老用户的配置失联。
+  "id": "PLUGIN_ID",
+  "version": "0.1.0",
+  "displayName": "VelaPlugin1",
+  "description": "A VelaShell terminal protocol plugin.",
+  "author": "AUTHOR_NAME",
+  "publisher": "PUBLISHER_ID",
+  "entry": "VelaPlugin1.dll",
+  "apiLevel": 2,
+  // 用到了 SDK 2.0.4 才有的 PluginIcon(会话标签页的图标)。apiLevel 只在破坏性变更时才动,
+  // 表达不了"要 2.0.4 以上",不声明的话老宿主会把插件装上,直到用户点开页签才抛
+  // MissingMethodException。用到更新的 SDK 面时把这里一起抬上去;删掉图标可以降回去。
+  "minSdkVersion": "2.0.4",
+  // 协议能力**只在 inProcess 下可用**:终端的每一次读写都是宿主反向调用插件,
+  // 隔离进程的 RPC 只承载插件→宿主方向。写成 isolated 的清单会在发现期被拒绝。
+  "hostMode": "inProcess",
+  // 惰性激活:用户在连接配置页点到本协议的页签(或打开一条本协议的会话)才装载本程序集。
+  "activationEvents": [ "onProtocol:PLUGIN_ID" ],
+  "contributes": {
+    // 声明式协议页签:发现期就画进连接配置页,**不装载程序集**。连接表单的字段在激活后
+    // 由 ProtocolDescriptor 补齐(见 PluginMain.cs)。
+    // id 必须等于插件 id,或以 "<插件id>." 开头;它落进用户的会话配置,发布后不可更改。
+    // displayName 是静态 JSON,翻不了 —— 本地化的页签名由激活后注册的描述给。
+    "protocols": [
+      { "id": "PLUGIN_ID", "displayName": "VelaPlugin1", "defaultPort": 7007 }
+    ]
+  }
+}

@@ -1,0 +1,32 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net11.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <IsPackable>false</IsPackable>
+    <!-- 契约程序集与插件程序集都带 RequiresPreviewFeatures。插件工程由
+         VelaShell.PluginSdk.Build 打开这一项,测试工程不导入那个包的 targets,得自己开 ——
+         否则碰到 IVelaPlugin / IPluginContext 的每一行都报 CA2252。 -->
+    <EnablePreviewFeatures>true</EnablePreviewFeatures>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="18.11.0" />
+    <PackageReference Include="MSTest.TestAdapter" Version="4.5.1" />
+    <PackageReference Include="MSTest.TestFramework" Version="4.5.1" />
+    <!-- TestPluginContext 与各能力的内存替身:不起宿主即可驱动 ActivateAsync、
+         取出注册的协议描述、调连接。与插件引用的 VelaShell.PluginSdk.Build 同版本
+         (三个包同一次发布)。 -->
+    <PackageReference Include="VelaShell.PluginSdk.Testing" Version="SDK_VERSION" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Using Include="Microsoft.VisualStudio.TestTools.UnitTesting" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\VelaPlugin1.csproj" />
+  </ItemGroup>
+
+</Project>

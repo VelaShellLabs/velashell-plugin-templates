@@ -1,0 +1,9 @@
+{
+  "profiles": {
+    "VelaShell": {
+      "commandName": "Executable",
+      "executablePath": "%VELASHELL_EXE%",
+      "commandLineArgs": "--wait-debugger PLUGIN_ID"
+    }
+  }
+}
