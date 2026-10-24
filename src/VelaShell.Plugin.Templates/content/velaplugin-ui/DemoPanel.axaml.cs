@@ -1,6 +1,5 @@
 using Avalonia.Controls;
 using Avalonia.Interactivity;
-using Avalonia.Markup.Xaml;
 using VelaShell.PluginSdk;
 
 namespace VelaPlugin1;
@@ -17,11 +16,13 @@ public sealed partial class DemoPanel : UserControl
     public DemoPanel(IPluginContext context)
     {
         _context = context;
+        // InitializeComponent 由 Avalonia 的源生成器按 AXAML 生成:装载 XAML,并给 x:Name 的那些字段
+        // (CountSessionsButton / StatusText)赋值。别再自己写一个无参的 InitializeComponent():
+        // 重载决议会挑中它而不是生成的那个(后者带可选参数),XAML 照样装载,字段却全是 null,
+        // 下一行就是 NullReferenceException —— 面板根本开不出来。
         InitializeComponent();
         CountSessionsButton.Click += OnCountSessionsAsync;
     }
-
-    private void InitializeComponent() => AvaloniaXamlLoader.Load(this);
 
     private async void OnCountSessionsAsync(object? sender, RoutedEventArgs e)
     {
