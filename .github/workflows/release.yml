@@ -5,8 +5,8 @@
 #      VelaShell.Plugin.Templates    dotnet new 模板(velaplugin / velaplugin-ui / velaplugin-protocol / velaplugin-workspace)
 #
 # **另外四个包不在这里发**(2026-08-27 拆库起):
-#      VelaShell.PluginSdk / .Testing ………………………… VelaShellLabs/velashell-plugin-sdk
-#      VelaShell.Plugin.Cli / VelaShell.PluginSdk.Build … VelaShellLabs/velashell-plugin-cli
+#      VelaShell.PluginSdk / .Testing / .Build ………… VelaShellLabs/velashell-plugin-sdk
+#      VelaShell.Plugin.Cli …………………………………………… VelaShellLabs/velashell-plugin-cli
 # 三个仓库各有各的版本号。改一行模板文案就发一版模板,不必惊动那两个仓库。
 #
 # 📌 本仓库有**两个**版本号,含义完全不同(见 Directory.Build.props 的注释):
@@ -15,7 +15,7 @@
 #      VelaBuildPackageVersion    `dotnet new velaplugin` 生成的工程要引用哪一版
 #                                 VelaShell.PluginSdk.Build
 #
-#    发版只动前者。要动后者(velashell-plugin-cli 发了新版 .Build,你想让新建工程指过去)
+#    发版只动前者。要动后者(velashell-plugin-sdk 发了新版 .Build,你想让新建工程指过去)
 #    是一次**独立的**改动:
 #      pwsh scripts/Set-Version.ps1 -BuildPackageVersion <新版本>
 #    它会同时改四个模板的 template.json 与两份 dev-guide 的 PackageReference 片段,

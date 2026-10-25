@@ -51,19 +51,20 @@ Avalonia、清单校验与打包器都随它到位。
 
 | 仓库 | 产出 | 什么时候发 |
 | --- | --- | --- |
-| [`velashell-plugin-sdk`](https://github.com/VelaShellLabs/velashell-plugin-sdk) | `VelaShell.PluginSdk`、`.Testing` | 契约有增删改时 |
-| [`velashell-plugin-cli`](https://github.com/VelaShellLabs/velashell-plugin-cli) | `VelaShell.Plugin.Cli`(`vela-plugin`)、`VelaShell.PluginSdk.Build` | 工具/打包/MSBuild 逻辑变化时 |
+| [`velashell-plugin-sdk`](https://github.com/VelaShellLabs/velashell-plugin-sdk) | `VelaShell.PluginSdk`、`.Testing`、`.Build` | 契约有增删改时,或 MSBuild/打包逻辑变化时 |
+| [`velashell-plugin-cli`](https://github.com/VelaShellLabs/velashell-plugin-cli) | `VelaShell.Plugin.Cli`(`vela-plugin`) | 命令行工具本身变化时 |
 | **本仓库** `velashell-plugin-templates` | `VelaShell.Plugin.Templates` | 模板内容变化,或要把新建工程指到新版 Build 包时 |
 
-依赖方向是单向的,没有环:
+`VelaShell.PluginSdk.Build` 于 2026-09-11 从 velashell-plugin-cli 搬到了 velashell-plugin-sdk,
+与契约同版本发布。依赖方向是单向的,没有环:
 
 ```
-velashell-plugin-sdk        契约
-        ↓ NuGet
-velashell-plugin-cli        vela-plugin + VelaShell.PluginSdk.Build
+velashell-plugin-sdk        契约 + VelaShell.PluginSdk.Build
         ↓ NuGet(仅一个版本字符串 + 冒烟时真的还原一次)
 velashell-plugin-templates  ← 本仓库
 ```
+
+velashell-plugin-cli 只引用契约包、没有下游,与本仓库之间没有依赖。
 
 另外三个相关仓库:[joesdu/VelaShell](https://github.com/joesdu/VelaShell)(宿主主程序)、
 [VelaShellLabs/velashell-plugins](https://github.com/VelaShellLabs/velashell-plugins)(第一方插件)、
@@ -78,7 +79,7 @@ velashell-plugin-templates  ← 本仓库
 | 属性(`Directory.Build.props`) | 含义 | 什么时候动 |
 | --- | --- | --- |
 | `VelaTemplatesVersion` | 模板包自己的版本 | 每次发版。就是 Release 标签里那个 |
-| `VelaBuildPackageVersion` | 生成的工程要引用哪一版 `VelaShell.PluginSdk.Build` | cli 仓库发了新版 `.Build`,而你想让新建工程指过去 |
+| `VelaBuildPackageVersion` | 生成的工程要引用哪一版 `VelaShell.PluginSdk.Build` | sdk 仓库发了新版 `.Build`,而你想让新建工程指过去 |
 
 第二个有七处落点(props、四个 `template.json`,以及文档仓库里两份 `dev-guide.md`),由脚本统一维护:
 
@@ -110,7 +111,7 @@ pwsh scripts/Invoke-Smoke.ps1 -Feed ./artifacts/nuget -Version 1.5.0 -BuildPacka
 地方全在包装好之后(`.template.config` 以点开头,没开 `NoDefaultExcludes` 就不会进包,
 而且不报错,只是 `dotnet new` 列表里看不见它)。
 
-想验一版还没发布的 `VelaShell.PluginSdk.Build`:在 cli 仓库
+想验一版还没发布的 `VelaShell.PluginSdk.Build`:在 sdk 仓库
 `dotnet pack -o <这里>/artifacts/nuget`,冒烟脚本会把那个目录当作还原源之一。
 
 本仓库**不产出程序集**,因此既不签名也不需要任何机密。
