@@ -32,7 +32,7 @@
     "sdkVersion": {
       "type": "parameter",
       "datatype": "text",
-      "defaultValue": "2.0.9",
+      "defaultValue": "2.1.4",
       "replaces": "SDK_VERSION",
       "description": "Version of the VelaShell.PluginSdk.Build package to reference (the test project references VelaShell.PluginSdk.Testing at the same version)."
     },

@@ -38,7 +38,7 @@
       抬它的时机:velashell-plugin-sdk 发了新版 .Build 包,而你希望新建的工程指过去。
       **不抬也完全正常** —— 新建的工程继续引用上一版,那是可用的,不是遗漏。
     -->
-    <VelaBuildPackageVersion Condition="'$(VelaBuildPackageVersion)' == ''">2.0.9</VelaBuildPackageVersion>
+    <VelaBuildPackageVersion Condition="'$(VelaBuildPackageVersion)' == ''">2.1.4</VelaBuildPackageVersion>
   </PropertyGroup>
 
   <PropertyGroup>
