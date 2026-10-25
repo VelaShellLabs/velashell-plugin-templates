@@ -66,7 +66,7 @@ pwsh scripts/Invoke-Smoke.ps1 -Feed ./artifacts/nuget -Version <版本> -BuildPa
 | 属性(`Directory.Build.props`) | 含义 | 什么时候动 |
 | --- | --- | --- |
 | `VelaTemplatesVersion` | 模板包自己的版本 | 每次发版 |
-| `VelaBuildPackageVersion` | 生成的工程引用哪一版 `VelaShell.PluginSdk.Build` | cli 仓库发了新版且你想让新建工程指过去 |
+| `VelaBuildPackageVersion` | 生成的工程引用哪一版 `VelaShell.PluginSdk.Build` | sdk 仓库发了新版且你想让新建工程指过去 |
 
 **不抬 `VelaBuildPackageVersion` 完全正常**,不是遗漏。
 

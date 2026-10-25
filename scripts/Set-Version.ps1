@@ -50,7 +50,7 @@
 
 .EXAMPLE
     pwsh scripts/Set-Version.ps1 -BuildPackageVersion 1.5.2
-    velashell-plugin-cli 发了新版 .Build,把新建工程指过去。模板包版本随后也要发一版
+    velashell-plugin-sdk 发了新版 .Build,把新建工程指过去。模板包版本随后也要发一版
     才能让人拿到,所以通常紧跟一句 Set-Version.ps1 <新模板版本>。
 
 .EXAMPLE
