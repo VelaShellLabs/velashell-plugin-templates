@@ -111,9 +111,6 @@ pwsh scripts/Invoke-Smoke.ps1 -Feed ./artifacts/nuget -Version 1.5.0 -BuildPacka
 地方全在包装好之后(`.template.config` 以点开头,没开 `NoDefaultExcludes` 就不会进包,
 而且不报错,只是 `dotnet new` 列表里看不见它)。
 
-想验一版还没发布的 `VelaShell.PluginSdk.Build`:在 sdk 仓库
-`dotnet pack -o <这里>/artifacts/nuget`,冒烟脚本会把那个目录当作还原源之一。
-
 本仓库**不产出程序集**,因此既不签名也不需要任何机密。
 
 ## 发版
