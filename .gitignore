@@ -376,6 +376,8 @@ FodyWeavers.xsd
 dist/
 out/
 
-# 本地联调用的上游包(见 nuget.config)。目录本身要保留,内容不入库。
+# 早年本地 NuGet 源的落点。把它挂成还原源的 nuget.config 已在 3180c0c 删掉,
+# 现在没有任何构建或脚本读这个目录;规则留着,只防旧工作区里残留的 .nupkg 被误提交。
+# 未发布的包不在这里联调 —— 按 velashell-plugin-sdk 的版本纪律,不造本地包给下游用。
 local-packages/*
 !local-packages/.gitkeep
